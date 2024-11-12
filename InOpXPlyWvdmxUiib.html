@@ -1,0 +1,369 @@
+<html><head><base href="/">
+<meta charset="UTF-8">
+<title>Windows 12 Concept</title>
+<style>
+:root {
+  --accent: #0078d4;
+  --bg: #0c0c0c;
+  --fg: #ffffff;
+  --taskbar-height: 50px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.desktop {
+  height: calc(100vh - var(--taskbar-height));
+  position: relative;
+  background: url('https://images.unsplash.com/photo-1502481851512-e9e2529bfbf9?auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+}
+
+.taskbar {
+  animation: slideUp 0.5s ease-out;
+  height: var(--taskbar-height);
+  background: rgba(12, 12, 12, 0.85);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  z-index: 1000;
+}
+
+.start-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.start-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.start-menu {
+  position: fixed;
+  bottom: var(--taskbar-height);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: 650px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: rgba(12, 12, 12, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 25px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.start-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.app-tile {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  gap: 8px;
+  padding: 10px;
+}
+
+.app-tile:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.app-tile span {
+  font-size: 12px;
+  text-align: center;
+}
+
+.app-tile i {
+  font-size: 24px;
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 8px 15px;
+  border: none;
+  color: var(--fg);
+  font-size: 14px;
+}
+
+.search-bar:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.system-tray {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.time {
+  font-size: 14px;
+}
+
+.window {
+  position: absolute;
+  background: rgba(12, 12, 12, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  min-width: 400px;
+  min-height: 300px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: windowOpen 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+@keyframes windowOpen {
+  from {
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.window-header {
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px 12px 0 0;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.window-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.close { background: #ff5f57; }
+.minimize { background: #febc2e; }
+.maximize { background: #28c840; }
+
+.window-minimize {
+  animation: minimizeWindow 0.3s ease-out forwards;
+}
+
+@keyframes minimizeWindow {
+  to {
+    transform: scale(0.5) translateY(100vh);
+    opacity: 0;
+  }
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="desktop" id="desktop"></div>
+
+<div class="taskbar">
+  <div class="start-button" id="startBtn">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+      <rect x="2" y="2" width="7" height="7" rx="1"/>
+      <rect x="11" y="2" width="7" height="7" rx="1"/>
+      <rect x="2" y="11" width="7" height="7" rx="1"/>
+      <rect x="11" y="11" width="7" height="7" rx="1"/>
+    </svg>
+  </div>
+  <input type="text" class="search-bar" placeholder="Type here to search...">
+  <div class="system-tray">
+    <div id="time" class="time"></div>
+  </div>
+</div>
+
+<div class="start-menu" id="startMenu">
+  <div class="app-tile"><i class="fas fa-globe"></i><span>Browser</span></div>
+  <div class="app-tile"><i class="fas fa-file-alt"></i><span>Notepad</span></div>
+  <div class="app-tile"><i class="fas fa-folder"></i><span>Files</span></div>
+  <div class="app-tile"><i class="fas fa-cog"></i><span>Settings</span></div>
+  <div class="app-tile"><i class="fas fa-gamepad"></i><span>Games</span></div>
+  <div class="app-tile"><i class="fas fa-envelope"></i><span>Mail</span></div>
+  <div class="app-tile"><i class="fas fa-music"></i><span>Music</span></div>
+  <div class="app-tile"><i class="fas fa-camera"></i><span>Camera</span></div>
+  <div class="app-tile"><i class="fas fa-paint-brush"></i><span>Paint</span></div>
+  <div class="app-tile"><i class="fas fa-chart-bar"></i><span>Charts</span></div>
+  <div class="app-tile"><i class="fas fa-comments"></i><span>Chat</span></div>
+  <div class="app-tile"><i class="fas fa-calendar"></i><span>Calendar</span></div>
+  <div class="app-tile"><i class="fas fa-calculator"></i><span>Calculator</span></div>
+  <div class="app-tile"><i class="fas fa-image"></i><span>Photos</span></div>
+  <div class="app-tile"><i class="fas fa-video"></i><span>Videos</span></div>
+  <div class="app-tile"><i class="fas fa-store"></i><span>Store</span></div>
+  <div class="app-tile"><i class="fas fa-weather"></i><span>Weather</span></div>
+  <div class="app-tile"><i class="fas fa-terminal"></i><span>Terminal</span></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const startBtn = document.getElementById('startBtn');
+  const startMenu = document.getElementById('startMenu');
+  const desktop = document.getElementById('desktop');
+  const timeDisplay = document.getElementById('time');
+
+  // Start Menu Toggle
+  startBtn.addEventListener('click', () => {
+    startMenu.classList.toggle('active');
+  });
+
+  // Close start menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!startMenu.contains(e.target) && !startBtn.contains(e.target)) {
+      startMenu.classList.remove('active');
+    }
+  });
+
+  // Time Update
+  function updateTime() {
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    timeDisplay.textContent = time;
+  }
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // Window Creation
+  function createWindow(title = 'New Window', icon = 'fas fa-window-maximize') {
+    const window = document.createElement('div');
+    window.className = 'window';
+    window.style.top = `${50 + Math.random() * 100}px`;
+    window.style.left = `${50 + Math.random() * 100}px`;
+
+    window.innerHTML = `
+      <div class="window-header">
+        <span><i class="${icon}"></i> ${title}</span>
+        <div class="window-controls">
+          <div class="window-button minimize"></div>
+          <div class="window-button maximize"></div>
+          <div class="window-button close"></div>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 20px;">
+        <p>Window Content Goes Here</p>
+      </div>
+    `;
+
+    // Make window draggable
+    const header = window.querySelector('.window-header');
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+
+    header.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      initialX = e.clientX - window.offsetLeft;
+      initialY = e.clientY - window.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+        window.style.left = `${currentX}px`;
+        window.style.top = `${currentY}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Window controls
+    const closeBtn = window.querySelector('.close');
+    closeBtn.addEventListener('click', () => {
+      window.remove();
+    });
+
+    const minimizeBtn = window.querySelector('.minimize');
+    minimizeBtn.addEventListener('click', () => {
+      window.classList.add('window-minimize');
+      setTimeout(() => window.remove(), 300);
+    });
+
+    const maximizeBtn = window.querySelector('.maximize');
+    let isMaximized = false;
+    maximizeBtn.addEventListener('click', () => {
+      if (isMaximized) {
+        window.style.width = '';
+        window.style.height = '';
+        window.style.top = '50px';
+        window.style.left = '50px';
+      } else {
+        window.style.width = '100%';
+        window.style.height = 'calc(100vh - var(--taskbar-height))';
+        window.style.top = '0';
+        window.style.left = '0';
+      }
+      isMaximized = !isMaximized;
+    });
+
+    desktop.appendChild(window);
+  }
+
+  // Create windows when clicking app tiles
+  const appTiles = document.querySelectorAll('.app-tile');
+  appTiles.forEach(tile => {
+    tile.addEventListener('click', () => {
+      const icon = tile.querySelector('i').className;
+      const title = tile.querySelector('span').textContent;
+      createWindow(title, icon);
+      startMenu.classList.remove('active');
+    });
+  });
+});
+</script>
+
+</body></html>
